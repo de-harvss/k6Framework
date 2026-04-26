@@ -1,0 +1,46 @@
+# k6 performance tests — run as steps in your release pipeline after deploying to staging.
+# Set STAGING_BASE_URL as a secret pipeline variable pointing to your staging API URL.
+#
+# To trigger from a deploy pipeline rather than a direct push:
+#   Edit → Triggers → Pipeline completion triggers → add your deploy pipeline.
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  K6_VERSION: '0.54.0'
+  NODE_VERSION: '20.x'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(NODE_VERSION)
+    displayName: Install Node.js
+
+  - script: |
+      wget -q https://github.com/grafana/k6/releases/download/v$(K6_VERSION)/k6-v$(K6_VERSION)-linux-amd64.tar.gz
+      tar -xzf k6-v$(K6_VERSION)-linux-amd64.tar.gz
+      sudo mv k6-v$(K6_VERSION)-linux-amd64/k6 /usr/local/bin/k6
+    displayName: Install k6
+
+  - script: npm ci && npm run build
+    displayName: Install dependencies and build
+
+  # One step per test file. Add a step here when adding a new service subfolder.
+  - script: k6 run --env ENV=staging dist/tests/api/todos-api/health.test.js
+    displayName: Smoke — todos-api health
+    env:
+      STAGING_BASE_URL: $(STAGING_BASE_URL)
+
+  - script: k6 run --env ENV=staging dist/tests/api/todos-api/todos.test.js
+    displayName: Smoke — todos-api CRUD
+    env:
+      STAGING_BASE_URL: $(STAGING_BASE_URL)
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      pathToPublish: results/
+      artifactName: k6-results
+    displayName: Publish results

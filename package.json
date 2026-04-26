@@ -1,0 +1,30 @@
+{
+  "name": "k6Framework",
+  "version": "1.0.0",
+  "description": "k6 performance testing framework",
+  "scripts": {
+    "lint": "tsc --noEmit",
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && k6 run --env ENV=dev dist/tests/api/todos-api/health.test.js && k6 run --env ENV=dev dist/tests/api/todos-api/todos.test.js && k6 run --env ENV=dev dist/tests/flows/todo-lifecycle.test.js",
+    "test:staging": "npm run build && k6 run --env ENV=staging dist/tests/api/todos-api/health.test.js && k6 run --env ENV=staging dist/tests/api/todos-api/todos.test.js && k6 run --env ENV=staging dist/tests/flows/todo-lifecycle.test.js",
+    "test:smoke": "npm run build && k6 run --env ENV=dev --env SCENARIO=smoke dist/tests/api/todos-api/health.test.js && k6 run --env ENV=dev --env SCENARIO=smoke dist/tests/api/todos-api/todos.test.js && k6 run --env ENV=dev --env SCENARIO=smoke dist/tests/flows/todo-lifecycle.test.js",
+    "test:load": "npm run build && k6 run --env ENV=dev --env SCENARIO=load dist/tests/api/todos-api/todos.test.js",
+    "test:stress": "npm run build && k6 run --env ENV=dev --env SCENARIO=stress dist/tests/api/todos-api/todos.test.js",
+    "test:spike": "npm run build && k6 run --env ENV=dev --env SCENARIO=spike dist/tests/api/todos-api/todos.test.js",
+    "test:smoke:staging": "npm run build && k6 run --env ENV=staging --env SCENARIO=smoke dist/tests/api/todos-api/health.test.js && k6 run --env ENV=staging --env SCENARIO=smoke dist/tests/api/todos-api/todos.test.js && k6 run --env ENV=staging --env SCENARIO=smoke dist/tests/flows/todo-lifecycle.test.js",
+    "test:load:staging": "npm run build && k6 run --env ENV=staging --env SCENARIO=load dist/tests/api/todos-api/todos.test.js",
+    "test:stress:staging": "npm run build && k6 run --env ENV=staging --env SCENARIO=stress dist/tests/api/todos-api/todos.test.js",
+    "test:spike:staging": "npm run build && k6 run --env ENV=staging --env SCENARIO=spike dist/tests/api/todos-api/todos.test.js",
+    "test:smoke:health": "npm run build && k6 run --env ENV=dev dist/tests/api/todos-api/health.test.js",
+    "test:smoke:todos": "npm run build && k6 run --env ENV=dev dist/tests/api/todos-api/todos.test.js",
+    "test:smoke:lifecycle": "npm run build && k6 run --env ENV=dev dist/tests/flows/todo-lifecycle.test.js",
+    "test:smoke:health:staging": "npm run build && k6 run --env ENV=staging dist/tests/api/todos-api/health.test.js",
+    "test:smoke:todos:staging": "npm run build && k6 run --env ENV=staging dist/tests/api/todos-api/todos.test.js",
+    "test:smoke:lifecycle:staging": "npm run build && k6 run --env ENV=staging dist/tests/flows/todo-lifecycle.test.js"
+  },
+  "devDependencies": {
+    "@types/k6": "^0.54.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.4.0"
+  }
+}

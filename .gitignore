@@ -1,0 +1,14 @@
+node_modules/
+dist/
+package-lock.json
+
+# k6 result output files — scope to results/ so package.json is not excluded
+results/
+results/**/*.json
+results/**/*.csv
+*.csv
+
+# Local environment overrides — never commit secrets
+.env
+.env.local
+.env.*.local
